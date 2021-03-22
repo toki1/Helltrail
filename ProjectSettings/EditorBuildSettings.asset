@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Main Menu.unity
+    guid: a51392e756515a24ea05379c2ba07d4b
+  - enabled: 1
+    path: Assets/Scenes/Credits Screen.unity
+    guid: 6e88e9da04aa15d4991b9bfe519727c9
+  - enabled: 1
+    path: Assets/Scenes/Death Screen.unity
+    guid: d81f08aec4e28bd4da3c59acae89ccfe
+  - enabled: 1
+    path: Assets/Scenes/Debug Menu.unity
+    guid: 04fa794b25b516f4abe6aa483d673e8a
+  - enabled: 1
+    path: Assets/Scenes/FinalBoss 1.unity
+    guid: 7d7d429e0209219479cccc8cf34a371f
+  - enabled: 1
+    path: Assets/Scenes/GluttonyV2.unity
+    guid: d2bcf4375dea1b14cae800bf2a25b40b
+  - enabled: 1
+    path: Assets/Scenes/StatScreen.unity
+    guid: 93c584cf595c89542bf42fc91a078994
+  - enabled: 1
+    path: Assets/Scenes/LimboV2.unity
+    guid: d3f5757b5687e7248aa4461e82fcb074
+  - enabled: 1
+    path: Assets/Scenes/Peyton Animation Scene.unity
+    guid: 3b819da8c091c89498438d8d37204c1f
+  - enabled: 1
+    path: Assets/Scenes/roomGeneration test scene.unity
+    guid: 6eb30770304f2104cbde137c7936342c
+  - enabled: 1
+    path: Assets/Scenes/SampleScene.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Win Screen.unity
+    guid: 9226f1f9b42779745ad3f7fe362c775f
+  m_configObjects: {}

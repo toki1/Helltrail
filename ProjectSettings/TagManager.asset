@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Enemy
+  - Boss
+  - Stats
+  - Door
+  - Arrow
+  - Soul
+  - Wall
+  - BossAttacks
+  - Potion
+  - Blood
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Collideables
+  - Enemies
+  - movePoint
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - Meshes
+  - 
+  - 
+  - 
+  - fawef
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - Player
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: New Layer
+    uniqueID: 659576549
+    locked: 0
+  - name: New Layer
+    uniqueID: 3210169031
+    locked: 0
+  - name: blood
+    uniqueID: 1504825823
+    locked: 0
+  - name: weapon&pot
+    uniqueID: 3952122021
+    locked: 0
+  - name: Playerand monters
+    uniqueID: 2752123713
+    locked: 0
+  - name: asdf
+    uniqueID: 2462543361
+    locked: 0

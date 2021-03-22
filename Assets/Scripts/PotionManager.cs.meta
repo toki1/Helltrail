@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 55f461922c8737b4595e14989a54dd45
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - potionUsed: {instanceID: 0}
+  - healthSound: {fileID: 8300000, guid: bd65abc18e8115049a64ac11f30c4538, type: 3}
+  - defenseSound: {fileID: 8300000, guid: 193a5028fdaa002449aad38b1175feac, type: 3}
+  - damageSound: {fileID: 8300000, guid: 9e466a158629d4f4ea3fad2b02dff6d2, type: 3}
+  - rangeSound: {fileID: 8300000, guid: b12697562754c604283e5caf2371d16f, type: 3}
+  - healthUp: {fileID: 2007017813860939879, guid: a89cd0bb1028e4b4f97162fb1f1bb030, type: 3}
+  - defenseUp: {fileID: 5692216435994112583, guid: 87f84e7d2696518488a0cf07d7aefcc2, type: 3}
+  - damageUp: {fileID: 2401533880973878105, guid: 9631ffeb135e4cf4d80cc56ed8ef466e, type: 3}
+  - rangeUp: {fileID: 1890741528797612500, guid: 18b0edface94eb6479ed10a8dabd8787, type: 3}
+  - bombExplosion: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
