@@ -24,7 +24,6 @@ public class Path : MonoBehaviour
         if(currentNode < transform.childCount)
         {
             Virgil.transform.position = Vector3.Lerp(Virgil.transform.position, transform.GetChild(currentNode).transform.position, time);
-            //transform.GetChild(currentNode).transform
         }
         
     }

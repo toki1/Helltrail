@@ -4,7 +4,10 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
 using System.Linq;
-
+/*
+ * a modified version of circlecreation.cs to handle limbo map.
+ * 
+ */
 
 
 public class LimboGeneration : MonoBehaviour

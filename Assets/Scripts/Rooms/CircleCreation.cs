@@ -64,66 +64,58 @@ public class CircleCreation : MonoBehaviour
         GameObject.Find("Main Camera").transform.position = new Vector3((roomWidth / 2) + roomWidth + 2, (roomHeight / 2) + roomHeight + 2, -10);
         GameObject p = Instantiate(player, new Vector3(roomWidth + roomWidth / 2.0f + 2.5f, roomHeight + 2.5f, 0), Quaternion.identity);
         p.name = "Player";
-        print("player created");
         Door.doorLock = false;
     }
-
+    //spawns enemies on a room
     void drawEnemies(int room)
     {
-        //for (int i = 0; i < roomCount; ++i)
+        Room currentRoom = roomMap[room];
+        if (roomMap[room].enemySpawned)
         {
-            Room currentRoom = roomMap[room];
-            if (roomMap[room].enemySpawned)
+            return;
+        }
+        roomMap[room].enemySpawned = true;
+        for (int x = 0; x < roomWidth; ++x)
+        {
+            for (int y = 0; y < roomHeight; ++y)
             {
-
-                return;
-            }
-            roomMap[room].enemySpawned = true;
-            for (int x = 0; x < roomWidth; ++x)
-            {
-                for (int y = 0; y < roomHeight; ++y)
+                int c = currentRoom.grid[x, y];
+                if (c > 0)
                 {
-                    int c = currentRoom.grid[x, y];
-                    //print(c);
-                    if (c > 0)
+                    Vector3 temp = grid.CellToWorld(new Vector3Int((currentRoom.roomID * roomWidth * 2) + x + roomWidth + 2, roomHeight + 2 + y, 0));
+                    temp.x += 0.5f;
+                    temp.y += 0.5f;
+                    GameObject enemy = Instantiate(enemyType[c - 1], temp, Quaternion.identity);
+                    //chance for enemy to hold a potion
+                    if (Random.Range(0, 10) < 2)
                     {
-                        Vector3 temp = grid.CellToWorld(new Vector3Int((currentRoom.roomID * roomWidth * 2) + x + roomWidth + 2, roomHeight + 2 + y, 0));
-                        temp.x += 0.5f;
-                        temp.y += 0.5f;
-                        int tempp = Random.Range(0, 10);
-                        GameObject enemy = Instantiate(enemyType[c - 1], temp, Quaternion.identity);
-
-                        if (tempp < 2)
+                        int whichPotion = Random.Range(0, 10);
+                        if (whichPotion < 4)
                         {
-                            int tempp2 = Random.Range(0, 10);
-                            if (tempp2 < 4)
-                            {
-                                enemy.GetComponent<EnemyHealthManager>().drop = potion;
-
-                            }
-                            else if (tempp2 < 7)
-                            {
-                                enemy.GetComponent<EnemyHealthManager>().drop = potion2;
-
-                            }
-                            else
-                            {
-                                enemy.GetComponent<EnemyHealthManager>().drop = potion3;
-
-                            }
-                        }
-                        else if (tempp < 6)
-                        {
-                            enemy.GetComponent<EnemyHealthManager>().dropSoul = true;
+                            enemy.GetComponent<EnemyHealthManager>().drop = potion;
 
                         }
+                        else if (whichPotion < 7)
+                        {
+                            enemy.GetComponent<EnemyHealthManager>().drop = potion2;
 
+                        }
+                        else
+                        {
+                            enemy.GetComponent<EnemyHealthManager>().drop = potion3;
+
+                        }
                     }
+                    else if (tempp < 6)
+                    {
+                        enemy.GetComponent<EnemyHealthManager>().dropSoul = true;
+                    }
+
                 }
             }
-
         }
     }
+    //draws terrain part of the room
     void drawTerrain()
     {
         for (int i = 0; i < roomCount; ++i)
@@ -136,41 +128,34 @@ public class CircleCreation : MonoBehaviour
                     int c = currentRoom.grid[x, y];
                     if (c < 0)
                     {
-                        //Instantiate(terrainType[0], grid.CellToWorld(new Vector3Int((currentRoom.roomID * roomWidth * 2)+x+ 12, 12+y, 0)), Quaternion.identity);
                         tileMapCollision.SetTile(new Vector3Int((currentRoom.roomID * roomWidth * 2) + x + roomWidth + 2, roomHeight + 2 + y, 0), terrainTiles[Random.Range(0, 8)]);
-
                     }
                 }
             }
-
         }
     }
-
+    //player changes rooms.
     public void changeRooms(bool isForward)
     {
+        //forward door
         if (isForward)
         {
             currentRoom += 1;
-
             int tempX = roomMap[currentRoom].entrance.x;
             int tempY = roomMap[currentRoom].entrance.y;
             Vector3 newPos = grid.CellToWorld(new Vector3Int(tempX, tempY, 0));
             newPos.x += 0.5f;
             newPos.y += 0.5f;
-
             GameObject.Find("Player").transform.position = newPos;
             GameObject.Find("Move Point").transform.position = newPos;
-
             GameObject cam = GameObject.Find("Main Camera");
             Vector3 newCamPos = new Vector3(cam.transform.position.x + (roomWidth * 2), cam.transform.position.y, cam.transform.position.z);
             cam.transform.position = newCamPos;
             drawEnemies(currentRoom);
         }
-        else
+        else//back door
         {
             currentRoom--;
-            print(currentRoom);
-
             int tempX = roomMap[currentRoom].exit.x;
             int tempY = roomMap[currentRoom].exit.y;
             Vector3 newPos = grid.CellToWorld(new Vector3Int(tempX, tempY, 0));
@@ -183,6 +168,7 @@ public class CircleCreation : MonoBehaviour
             cam.transform.position = newCamPos;
         }
     }
+    //spawns doors based on layout of the rooms
     void drawDoors()
     {
         for (int i = 0; i < roomCount; ++i)
@@ -207,7 +193,6 @@ public class CircleCreation : MonoBehaviour
                     {
                         isExit = false;
                         roomMap[i].entrance = new Coords((currentRoom.roomID * roomWidth * 2) + roomWidth + 1, (roomHeight / 2) + roomHeight + 2);
-
                         Vector3 temp = grid.CellToWorld(new Vector3Int((currentRoom.roomID * roomWidth * 2) + roomWidth + 1, (roomHeight / 2) + roomHeight + 2, 0));
                         tileMapCollision.SetTile(new Vector3Int((currentRoom.roomID * roomWidth * 2) + roomWidth + 1, (roomHeight / 2) + roomHeight + 2, 0), null);
                         temp.x += 0.5f;
@@ -219,18 +204,14 @@ public class CircleCreation : MonoBehaviour
                     else
                     {
                         roomMap[i].exit = new Coords((currentRoom.roomID * roomWidth * 2) + roomWidth + 1, (roomHeight / 2) + roomHeight + 2);
-
                         Vector3 temp = grid.CellToWorld(new Vector3Int((currentRoom.roomID * roomWidth * 2) + roomWidth + 1, (roomHeight / 2) + roomHeight + 2, 0));
                         tileMapCollision.SetTile(new Vector3Int((currentRoom.roomID * roomWidth * 2) + roomWidth + 1, (roomHeight / 2) + roomHeight + 2, 0), null);
-
                         temp.x += 0.5f;
                         temp.y += 0.5f;
                         Quaternion rotation = Quaternion.Euler(0, 0, 0);
                         GameObject d = Instantiate(door, temp, rotation);
                         d.GetComponent<Door>().isExit = true;
-
                     }
-
                 }
                 else if (tempX == 0 && tempY == 1)
                 {
@@ -240,7 +221,6 @@ public class CircleCreation : MonoBehaviour
                         roomMap[i].entrance = new Coords((currentRoom.roomID * roomWidth * 2) + (roomWidth / 2) + roomWidth + 2, (roomHeight) + roomHeight + 2);
                         Vector3 temp = grid.CellToWorld(new Vector3Int((currentRoom.roomID * roomWidth * 2) + (roomWidth / 2) + roomWidth + 2, (roomHeight) + roomHeight + 2, 0));
                         tileMapCollision.SetTile(new Vector3Int((currentRoom.roomID * roomWidth * 2) + (roomWidth / 2) + roomWidth + 2, (roomHeight) + roomHeight + 2, 0), null);
-
                         temp.x += 0.5f;
                         temp.y += 0.5f;
                         Quaternion rotation = Quaternion.Euler(0, 0, 270);
@@ -253,13 +233,11 @@ public class CircleCreation : MonoBehaviour
                         roomMap[i].exit = new Coords((currentRoom.roomID * roomWidth * 2) + (roomWidth / 2) + roomWidth + 2, (roomHeight) + roomHeight + 2);
                         Vector3 temp = grid.CellToWorld(new Vector3Int((currentRoom.roomID * roomWidth * 2) + (roomWidth / 2) + roomWidth + 2, (roomHeight) + roomHeight + 2, 0));
                         tileMapCollision.SetTile(new Vector3Int((currentRoom.roomID * roomWidth * 2) + (roomWidth / 2) + roomWidth + 2, (roomHeight) + roomHeight + 2, 0), null);
-
                         temp.x += 0.5f;
                         temp.y += 0.5f;
                         Quaternion rotation = Quaternion.Euler(0, 0, 270);
                         GameObject d = Instantiate(door, temp, rotation);
                         d.GetComponent<Door>().isExit = true;
-
                     }
 
                 }
@@ -271,7 +249,6 @@ public class CircleCreation : MonoBehaviour
                         roomMap[i].entrance = new Coords((currentRoom.roomID * roomWidth * 2) + roomWidth + roomWidth + 2, (roomHeight / 2) + roomHeight + 2);
                         Vector3 temp = grid.CellToWorld(new Vector3Int((currentRoom.roomID * roomWidth * 2) + roomWidth + roomWidth + 2, (roomHeight / 2) + roomHeight + 2, 0));
                         tileMapCollision.SetTile(new Vector3Int((currentRoom.roomID * roomWidth * 2) + roomWidth + roomWidth + 2, (roomHeight / 2) + roomHeight + 2, 0), null);
-
                         temp.x += 0.5f;
                         temp.y += 0.5f;
                         Quaternion rotation = Quaternion.Euler(0, 0, 180);
@@ -284,13 +261,11 @@ public class CircleCreation : MonoBehaviour
                         roomMap[i].exit = new Coords((currentRoom.roomID * roomWidth * 2) + roomWidth + roomWidth + 2, (roomHeight / 2) + roomHeight + 2);
                         Vector3 temp = grid.CellToWorld(new Vector3Int((currentRoom.roomID * roomWidth * 2) + roomWidth + roomWidth + 2, (roomHeight / 2) + roomHeight + 2, 0));
                         tileMapCollision.SetTile(new Vector3Int((currentRoom.roomID * roomWidth * 2) + roomWidth + roomWidth + 2, (roomHeight / 2) + roomHeight + 2, 0), null);
-
                         temp.x += 0.5f;
                         temp.y += 0.5f;
                         Quaternion rotation = Quaternion.Euler(0, 0, 180);
                         GameObject d = Instantiate(door, temp, rotation);
                         d.GetComponent<Door>().isExit = true;
-
                     }
 
                 }
@@ -302,7 +277,6 @@ public class CircleCreation : MonoBehaviour
                         roomMap[i].entrance = new Coords((currentRoom.roomID * roomWidth * 2) + roomWidth + 2 + (roomWidth / 2), 0 + roomHeight + 1);
                         Vector3 temp = grid.CellToWorld(new Vector3Int((currentRoom.roomID * roomWidth * 2) + roomWidth + 2 + (roomWidth / 2), 0 + roomHeight + 1, 0));
                         tileMapCollision.SetTile(new Vector3Int((currentRoom.roomID * roomWidth * 2) + roomWidth + 2 + (roomWidth / 2), 0 + roomHeight + 1, 0), null);
-
                         temp.x += 0.5f;
                         temp.y += 0.5f;
                         Quaternion rotation = Quaternion.Euler(0, 0, 90);
@@ -315,7 +289,6 @@ public class CircleCreation : MonoBehaviour
                         roomMap[i].exit = new Coords((currentRoom.roomID * roomWidth * 2) + roomWidth + 2 + (roomWidth / 2), 0 + roomHeight + 1);
                         Vector3 temp = grid.CellToWorld(new Vector3Int((currentRoom.roomID * roomWidth * 2) + roomWidth + 2 + (roomWidth / 2), 0 + roomHeight + 1, 0));
                         tileMapCollision.SetTile(new Vector3Int((currentRoom.roomID * roomWidth * 2) + roomWidth + 2 + (roomWidth / 2), 0 + roomHeight + 1, 0), null);
-
                         temp.x += 0.5f;
                         temp.y += 0.5f;
                         Quaternion rotation = Quaternion.Euler(0, 0, 90);
@@ -328,10 +301,13 @@ public class CircleCreation : MonoBehaviour
             }
         }
     }
+
     void loadObjects()
     {
         grid = gridObject.GetComponent<Grid>();
     }
+
+    //creates a map of the room 
     void drawRooms()
     {
         int tileXOffset = roomWidth + 2;
@@ -367,17 +343,7 @@ public class CircleCreation : MonoBehaviour
                         {
                             tileMap.SetTile(new Vector3Int(a + tileXOffset, b + tileYOffset, 0), tiles[0]);
                         }
-                        else if (currentRoom.exit.x - 1 == a && currentRoom.exit.y - 1 == b)
-                        {
-                            print("this ran2");
-                            //tileMap.SetTile(new Vector3Int(a + tileXOffset, b + tileYOffset, 0), tiles[5]);
-                        }
-                        else
-                        {
-                            //tileMap.SetTile(new Vector3Int(a + tileXOffset, b + tileYOffset, 0), tiles[5]);
 
-                            //Instantiate(enemyType[currentRoom.grid[a, b] - 1], grid.CellToWorld(new Vector3Int(a + tileXOffset, b + tileYOffset, 0)), Quaternion.identity);
-                        }
                     }
                 }
             }
@@ -385,6 +351,7 @@ public class CircleCreation : MonoBehaviour
         }
     }
 
+    //sets difficulty and number of terrain of room and gives room a unique id
     void setupRooms()
     {
         roomMap[0].roomID = 0;
@@ -394,13 +361,13 @@ public class CircleCreation : MonoBehaviour
         roomMap[0].difficulty = roomDifficulty[0];
         for (int i = 1; i < roomCount; ++i)
         {
-            //print("wtf");   
             roomMap[i].roomID = i;
             roomMap[i].numEnemies = numMonsters[i];
             roomMap[i].numTerrain = numTerrain[i];
             roomMap[i].difficulty = roomDifficulty[i];
         }
     }
+    //generates the specific room
     void generateRooms()
     {
         RoomGenerator roomGen = new RoomGenerator(enemyType, terrainType);
@@ -409,7 +376,7 @@ public class CircleCreation : MonoBehaviour
             roomGen.generateRoom(roomMap[i]);
         }
     }
-
+    //setups entire map(multiple room) layout
     void setupGameMap()
     {
         int currentxpos = 25;
@@ -479,23 +446,9 @@ public class CircleCreation : MonoBehaviour
             }
         }
     }
+    //returns coord of new door.
     Coords createDoor(int direction)
     {
-        /*
-        switch (direction)
-        {
-            case 0:
-                return new Coords(Random.Range(1, roomWidth - 1), 0);
-            case 1:
-                return new Coords(Random.Range(1, roomWidth - 1), roomHeight);
-            case 2:
-                return new Coords(0, Random.Range(1, roomHeight - 1));
-            case 3:
-                return new Coords(roomWidth, Random.Range(1, roomHeight - 1));
-            default:
-                print("Default case");
-                break;
-        }*/
         switch (direction)
         {
             case 0:
@@ -513,6 +466,7 @@ public class CircleCreation : MonoBehaviour
         return new Coords();
 
     }
+    //get next door location
     Coords getDoor(Coords prevRoomDoor)
     {
         if (prevRoomDoor.x == roomWidth)
@@ -537,11 +491,10 @@ public class CircleCreation : MonoBehaviour
             return new Coords();
         }
     }
-
+    //find path A* algorithm.(used by monsters.)
     public List<Vector3Int> pathFind(Vector3 currentPos)
     {
         Node[,] nodes = new Node[roomWidth, roomHeight];
-        print(currentRoom);
         int tileXOffset = (roomWidth + 2 )+  ((roomWidth*2)*(currentRoom)) ;
         int tileYOffset = roomHeight + 2;
         for (int i = 0; i < roomWidth; ++i)
@@ -556,16 +509,11 @@ public class CircleCreation : MonoBehaviour
         Vector3Int target = grid.WorldToCell(GameObject.Find("Player").transform.position);
         Vector3Int start = grid.WorldToCell(currentPos);
 
-        print(target.x + "        " + target.y);
-        print(tileXOffset + "      sdfasdfsa  ");
 
         Coords to = new Coords(target.x - tileXOffset, target.y -tileYOffset);
         Coords from = new Coords(start.x - tileXOffset, start.y - tileYOffset);
-        print(to.x + "  " + to.y);
-        print(from.x + "   " + from.y);
 
         List<Coords> path = FindPath(nodes, from, to);
-        print(path.Count);
         path.Insert(0, from);
         path.RemoveAt(path.Count - 1);
 
@@ -603,26 +551,18 @@ public class CircleCreation : MonoBehaviour
 
     private List<Node> helper(Node[,] nodes, Coords startPos, Coords targetPos)
     {
-        print(startPos.x);
-
-        print(targetPos.x + "         " + targetPos.y);
-
-
         if (startPos.x >= roomWidth|| startPos.x < 0)
         {
-            print(targetPos.x + "      1   " + targetPos.y);
 
             return null;
         }
         if (targetPos.x >= roomWidth || targetPos.x < 0)
         {
-            print(targetPos.x + "     2    " + targetPos.y);
 
             return null;
         }
         if (targetPos.y >= roomHeight || targetPos.y < 0)
         {
-            print(targetPos.x + "     3    " + targetPos.y);
 
             return null;
         }

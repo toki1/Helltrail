@@ -96,6 +96,7 @@ public class Virgil : MonoBehaviour
 
         next();
     }
+    //prevents player from progressing further until objective is accomplished.
     void Update()
     {
         if (move)
@@ -108,7 +109,6 @@ public class Virgil : MonoBehaviour
                 if (changeRoom)
                 {
                     changeRoom = false;
-                    print("asdf2");
                     next();
 
                 }
@@ -124,11 +124,7 @@ public class Virgil : MonoBehaviour
 
             next();
         }
-        if (triggerDialogue && arrivedAtTarget && doorTrigger)
-        {
-            //next();
-            //triggerDialogue = false;
-        }
+
         if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return))
         {
             print(stage);
@@ -144,14 +140,12 @@ public class Virgil : MonoBehaviour
                 dialogueUI.SetActive(false);
                 GameObject.Find("Player").GetComponent<PlayerMovementController>().enabled = true;
 
-                // Time.timeScale = 1;
                 if (!killingPart)
                 {
                     Door.doorLock = false;
 
                 }
-                //
-                //next();
+
             }
             if (pause && !killingPart)
             {
@@ -167,7 +161,6 @@ public class Virgil : MonoBehaviour
             print("enter pressed");
         }
         int temp = GameObject.FindGameObjectsWithTag("Enemy").Length;
-        //print(temp);
         if (temp == enemycount - 3 && killingPart)
         {
             Door.doorLock = false;
@@ -181,9 +174,8 @@ public class Virgil : MonoBehaviour
     }
     public void fix()
     {
-        //dialogueEndPoint++;
     }
-
+    //triggers next dialogue
     void nextDialogue()
     {
         if (dialogueStage >= dialogues.Length)
@@ -201,8 +193,6 @@ public class Virgil : MonoBehaviour
             StopCoroutine(coroutine);
             coroutine = TextAnimation(d.text);
             StartCoroutine(coroutine);
-
-            //textUI.GetComponent<Text>().text = d.text;
         }
         else
         {
@@ -214,7 +204,6 @@ public class Virgil : MonoBehaviour
 
             StartCoroutine(coroutine);
 
-            //textUI.GetComponent<Text>().text = d.text;
         }
 
         // Play weapon animations when Virgil introduces a weapon
@@ -223,16 +212,7 @@ public class Virgil : MonoBehaviour
             daggerIcon.GetComponent<Animator>().enabled = true;
 
         }
-        /*
-        else if (dialogueStage == 9)
-        {
-            swordIcon.GetComponent<Animator>().enabled = true;
 
-        }
-        else if (dialogueStage == 11)
-        {
-            bowIcon.GetComponent<Animator>().enabled = true;
-        }*/
         else if (dialogueStage == 15)
         {
             daggerIcon.GetComponent<Animator>().enabled = false;
@@ -240,8 +220,6 @@ public class Virgil : MonoBehaviour
             bowIcon.GetComponent<Animator>().enabled = false;
         }
 
-        print(dialogueStage);
-        print(dialogueEndPoint);
 
         dialogueStage++;
 
@@ -251,20 +229,12 @@ public class Virgil : MonoBehaviour
             inDialogue = false;
             if (pause)
             {
-                print("a");
             }
             else
             {
-                print("b");
-
                 next();
-
             }
-            print("c");
-
-
         }
-
     }
     private IEnumerator TextAnimation(string text)
     {
@@ -279,6 +249,7 @@ public class Virgil : MonoBehaviour
         
 
     }
+    //starts dialogue
     void doDialogue()
     {
         dialogueUI.SetActive(true);
@@ -294,6 +265,7 @@ public class Virgil : MonoBehaviour
         //Time.timeScale = 0;
         nextDialogue();
     }
+    //process of tutorial level
     public void next()
     {
 
